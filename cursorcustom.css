@@ -1,0 +1,31 @@
+/* Square pixel firefly trail */
+.firefly {
+  position: fixed;
+  border-radius: 0; /* Sharp square pixel instead of round circle */
+  pointer-events: none;
+  z-index: 9999;
+  background-color: #fff8a6;
+  box-shadow: 0 0 0 2px rgba(255, 215, 64, 0.45);
+  animation: float-firefly 1.5s steps(12) forwards;
+}
+
+@keyframes float-firefly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(var(--dx) * 0.2), calc(var(--dy) * 0.2));
+  }
+  50% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy));
+  }
+}
