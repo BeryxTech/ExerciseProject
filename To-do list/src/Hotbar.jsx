@@ -1,4 +1,8 @@
 import './Hotbar.css';
+import bookIcon from './assets/Book_and_Quill_JE2_BE2.png';
+import clockIcon from './assets/Clock_JE3_BE3.gif';
+import calendarIcon from './assets/Calendar.png';
+import barrierIcon from './assets/Barrier__item__JE2_BE2.png';
 
 export default function Hotbar({
   isBookOpen,
@@ -35,7 +39,7 @@ export default function Hotbar({
             {isBookOpen ? 'Hide Book' : 'Open Book'}
           </span>
           <img
-            src="https://minecraft.wiki/images/Book_and_Quill_JE2_BE2.png?2128f"
+            src={bookIcon}
             alt="Book and Quill"
             className="hotbar-sprite"
           />
@@ -54,7 +58,7 @@ export default function Hotbar({
             {showClock ? 'Hide Clock' : 'Show Clock'}
           </span>
           <img
-            src="https://minecraft.wiki/images/Clock_JE3_BE3.gif?a4011"
+            src={clockIcon}
             alt="Clock"
             className="hotbar-sprite"
           />
@@ -70,7 +74,7 @@ export default function Hotbar({
             {isCalendarOpen ? 'Hide Calendar' : 'Open Calendar'}
           </span>
           <img
-            src="/src/assets/Calendar.png"
+            src={calendarIcon}
             alt="Calendar"
             className="hotbar-sprite"
             style={{ width: '100px', height: '70px', objectFit: 'contain' }}
@@ -81,6 +85,7 @@ export default function Hotbar({
         {[4, 5, 6, 7, 8].map((slot) => (
           <div key={slot} className="hotbar-slot empty" />
         ))}
+        {/*This is still under construction type shit, so I will add more features to the hotbar later.*/}
 
         {/* Slot 9: Clear Completed Tasks */}
         <button
@@ -90,7 +95,7 @@ export default function Hotbar({
         >
           <span className="mc-tooltip">Clear Completed ({completedCount})</span>
           <img
-            src="https://minecraft.wiki/images/Barrier_%28item%29_JE2_BE2.png?fb4fe"
+            src={barrierIcon}
             alt="Clear Completed"
             className="hotbar-sprite"
           />

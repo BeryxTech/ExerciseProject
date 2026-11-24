@@ -32,7 +32,7 @@
   top: 20px;
   left: 40px;
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .filter-tab {
@@ -89,17 +89,28 @@
 }
 
 .box h1 {
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
   line-height: 1.1;
-  font-size: 17px; 
+  font-size: 17px;
 }
 
-.box input {
-  display: block;
-  width: 100%;
+/* Input + Clock button row */
+.book-add-section {
+  margin-bottom: 10px;
+}
+
+.book-input-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.book-input-row input {
+  flex: 1;
+  min-width: 0;
   box-sizing: border-box;
   padding: 6px 8px;
-  margin: 0 0 12px 0;
+  margin: 0;
   font-family: inherit;
   font-size: 12px;
   color: #1e1812;
@@ -108,8 +119,61 @@
   outline: none;
 }
 
+.clock-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  padding: 0;
+  flex-shrink: 0;
+  background-color: rgba(139, 108, 66, 0.15);
+  border: 2px solid #8c7355;
+  cursor: pointer;
+}
+
+.clock-toggle-btn:hover,
+.clock-toggle-btn.active {
+  background-color: rgba(139, 108, 66, 0.35);
+  border-color: #5c4223;
+}
+
+.book-clock-sprite {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.book-time-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+  font-size: 10px;
+  color: #5c4223;
+}
+
+.book-select {
+  font-family: inherit;
+  font-size: 10px;
+  color: #1e1812;
+  background-color: rgba(139, 108, 66, 0.2);
+  border: 1px solid #8c7355;
+  padding: 2px 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.book-select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Task list */
 .box ul {
   list-style: none;
+  margin: 4px 0 0 0;
   padding-left: 4px;
 }
 
@@ -117,8 +181,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
-  font-size: 12px; 
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #1e1812;
 }
 
 .box li::before {
@@ -126,10 +191,30 @@
   font-family: 'Minecraft', monospace;
 }
 
+/* Urgency colors */
+.box li.urgency-overdue,
+.box li.urgency-overdue .task-time {
+  color: #b81d1d;
+}
+
+.box li.urgency-urgent-2h,
+.box li.urgency-urgent-2h .task-time {
+  color: #c95b00;
+}
+
+.box li.urgency-urgent-6h,
+.box li.urgency-urgent-6h .task-time {
+  color: #9e7400;
+}
+
 .task-text {
   position: relative;
   cursor: pointer;
   word-break: break-word;
+}
+
+.box li.completed {
+  color: #1e1812;
 }
 
 .box li.completed .task-text {
@@ -145,21 +230,6 @@
   height: 2px;
   background-color: #1e1812;
   pointer-events: none;
-}
-
-.delete-btn {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  font-family: inherit;
-  font-size: 16px;
-  color: #8c7355;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
 }
 
 .task-right {
@@ -187,4 +257,9 @@
   cursor: pointer;
   padding: 0 4px;
   line-height: 1;
+}
+
+.delete-btn:hover {
+  color: #a82828;
+  transform: scale(1.2);
 }
