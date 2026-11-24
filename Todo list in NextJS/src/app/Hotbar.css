@@ -1,0 +1,123 @@
+.mc-bottom-hud {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.mc-xp-container {
+  position: relative;
+  width: 364px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mc-xp-level {
+  font-size: 13px;
+  color: #80ff20;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+  margin-bottom: -4px;
+  z-index: 2;
+}
+
+.mc-xp-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #000000;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.mc-xp-fill {
+  height: 100%;
+  background: linear-gradient(180deg, #98ff38 0%, #56c914 100%);
+  transition: width 0.25s steps(8);
+}
+
+.mc-hotbar {
+  display: flex;
+  background: rgba(20, 20, 20, 0.58);
+  backdrop-filter: blur(2px);
+  border: 2px solid rgba(0, 0, 0, 0.85);
+  padding: 2px;
+}
+
+.hotbar-slot {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(139, 139, 139, 0.32);
+  border: 2px solid rgba(30, 30, 30, 0.75);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.hotbar-slot.empty {
+  cursor: default;
+}
+
+.hotbar-slot:not(.empty):hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.hotbar-slot.selected {
+  outline: 2px solid #ffffff;
+  outline-offset: -1px;
+  z-index: 2;
+}
+
+.hotbar-sprite {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.hotbar-count {
+  position: absolute;
+  bottom: 1px;
+  right: 3px;
+  font-size: 11px;
+  color: #ffffff;
+  text-shadow: 2px 2px #222222;
+  pointer-events: none;
+}
+
+.mc-tooltip {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #ffffff;
+  text-shadow: 2px 2px #3f3f3f;
+  background-color: rgba(16, 0, 16, 0.94);
+  border: 2px solid #28007f;
+  box-shadow: 0 0 0 2px #100010;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease;
+}
+
+.hotbar-slot:hover .mc-tooltip {
+  opacity: 1;
+}
