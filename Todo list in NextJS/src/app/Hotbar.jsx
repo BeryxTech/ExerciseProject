@@ -11,16 +11,19 @@ export default function Hotbar({
   onClearCompleted,
   isCalendarOpen,
   onToggleCalendar,
+  alertsEnabled,
   notifPermission,
-  onRequestNotifPermission,
+  onToggleAlerts,
 }) {
   const xpPercent =
     totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
+  const isAlertsOn = alertsEnabled && notifPermission === 'granted';
+
   const getNotifTooltip = () => {
-    if (notifPermission === 'granted') return 'Alerts: ON';
     if (notifPermission === 'denied') return 'Alerts Blocked (Check Browser)';
-    return 'Enable Quest Alerts';
+    if (isAlertsOn) return 'Alerts: ON (Click to Mute)';
+    return 'Alerts: OFF (Click to Enable)';
   };
 
   return (
@@ -85,11 +88,11 @@ export default function Hotbar({
           />
         </button>
 
-        {/* Slot 4: Windows Desktop Notification Permission */}
+        {/* Slot 4: Toggle Quest Notifications */}
         <button
-          className={`hotbar-slot ${notifPermission === 'granted' ? 'selected' : ''}`}
-          onClick={onRequestNotifPermission}
-          aria-label="Enable Quest Notifications"
+          className={`hotbar-slot ${isAlertsOn ? 'selected' : ''}`}
+          onClick={onToggleAlerts}
+          aria-label="Toggle Quest Notifications"
         >
           <span className="mc-tooltip">{getNotifTooltip()}</span>
           <img

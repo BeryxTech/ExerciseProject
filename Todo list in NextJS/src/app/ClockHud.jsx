@@ -3,18 +3,22 @@
 import { useState, useEffect } from 'react';
 import './ClockHud.css';
 
+// Loads frame_000.png through frame_063.png in exact numerical order
 const clockFrames = Array.from(
   { length: 64 },
   (_, i) => `/Clock_Frame/frame_${String(i).padStart(3, '0')}.png`
 );
 
 export default function ClockHud({ remainingCount }) {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState(null);
 
   useEffect(() => {
+    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  if (!now) return null;
 
   // Map 24-hour IRL time to extracted frames (frame_000 = 12:00 PM Noon)
   const secondsSinceMidnight =

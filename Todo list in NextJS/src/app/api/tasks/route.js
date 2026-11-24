@@ -54,7 +54,7 @@ export async function PATCH(request) {
     const current = tasks[taskIndex];
     tasks[taskIndex] = {
       ...current,
-      completed: typeof completed === 'boolean' ? completed : !current.completed,
+      completed: typeof completed === 'boolean' ? completed : current.completed,
       notified: typeof notified === 'boolean' ? notified : current.notified,
     };
 
