@@ -1,28 +1,13 @@
 import { useState, useEffect } from 'react';
 import './ClockHud.css';
 
-function PixelDayNightIcon({ isNight }) {
-  return isNight ? (
-    <svg viewBox="0 0 16 16" shapeRendering="crispEdges" className="clock-icon">
-      <rect x="6" y="2" width="5" height="2" fill="#e8eefc" />
-      <rect x="4" y="4" width="4" height="2" fill="#e8eefc" />
-      <rect x="3" y="6" width="4" height="4" fill="#cfd9f2" />
-      <rect x="4" y="10" width="4" height="2" fill="#e8eefc" />
-      <rect x="6" y="12" width="5" height="2" fill="#e8eefc" />
-      <rect x="12" y="3" width="1" height="1" fill="#fff8a6" />
-      <rect x="13" y="7" width="1" height="1" fill="#fff8a6" />
-    </svg>
-  ) : (
-    <svg viewBox="0 0 16 16" shapeRendering="crispEdges" className="clock-icon">
-      <rect x="5" y="5" width="6" height="6" fill="#ffdf38" />
-      <rect x="6" y="6" width="4" height="4" fill="#fff48f" />
-      <rect x="7" y="2" width="2" height="2" fill="#ffdf38" />
-      <rect x="7" y="12" width="2" height="2" fill="#ffdf38" />
-      <rect x="2" y="7" width="2" height="2" fill="#ffdf38" />
-      <rect x="12" y="7" width="2" height="2" fill="#ffdf38" />
-    </svg>
-  );
-}
+// Loads frame_000.png through frame_063.png in exact numerical order
+const frameModules = import.meta.glob('./assets/Clock_Frame/*.png', {
+  eager: true,
+});
+const clockFrames = Object.keys(frameModules)
+  .sort()
+  .map((path) => frameModules[path].default);
 
 export default function ClockHud({ remainingCount }) {
   const [now, setNow] = useState(() => new Date());
@@ -32,8 +17,14 @@ export default function ClockHud({ remainingCount }) {
     return () => clearInterval(timer);
   }, []);
 
-  const hour = now.getHours();
-  const isNight = hour >= 18 || hour < 6;
+  // Map 24-hour IRL time to extracted frames (frame_000 = 12:00 PM Noon)
+  const secondsSinceMidnight =
+    now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+  const secondsSinceNoon = (secondsSinceMidnight - 43200 + 86400) % 86400;
+  const frameIndex = Math.floor(
+    (secondsSinceNoon / 86400) * clockFrames.length
+  );
+
   const formattedTime = now.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
@@ -47,7 +38,11 @@ export default function ClockHud({ remainingCount }) {
 
   return (
     <div className="mc-clock-hud">
-      <PixelDayNightIcon isNight={isNight} />
+      <img
+        src={clockFrames[frameIndex]}
+        alt="Minecraft Clock"
+        className="clock-icon"
+      />
       <div className="clock-details">
         <span className="clock-time">{formattedTime}</span>
         <span className="clock-date">
