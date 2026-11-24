@@ -1,0 +1,165 @@
+.book-stage {
+  z-index: 10;
+  animation: book-pop 0.16s steps(4) forwards;
+}
+
+@keyframes book-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.box {
+  position: relative;
+  width: 310px;
+  height: 415px;
+  font-family: 'Minecraft', 'Pixelify Sans', monospace;
+  color: #1e1812;
+  padding: 72px 34px 44px 42px;
+  box-sizing: border-box;
+  background: url('./assets/Book_and_Quill_Page_Blank.png') no-repeat center / 100% 100%;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
+}
+
+.book-filters {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  display: flex;
+  gap: 6px;
+}
+
+.filter-tab {
+  background: transparent;
+  border: none;
+  padding: 2px 4px;
+  font-family: inherit;
+  font-size: 11px;
+  color: #7a6348;
+  cursor: pointer;
+}
+
+.filter-tab:hover {
+  color: #1e1812;
+}
+
+.filter-tab.active {
+  color: #1e1812;
+  border-bottom: 2px solid #5c4223;
+}
+
+.page-nr {
+  position: absolute;
+  top: 22px;
+  right: 36px;
+  font-size: 12px;
+  color: #3b2e22;
+}
+
+.page-btn {
+  position: absolute;
+  bottom: 18px;
+  width: 44px;
+  height: 26px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.page-btn:disabled {
+  cursor: default;
+}
+
+.page-btn.prev {
+  left: 56px;
+}
+
+.page-btn.next {
+  right: 50px;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: rgba(255, 225, 110, 0.35);
+}
+
+.box h1 {
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+}
+
+.box input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  margin: 0 0 14px 0;
+  font-family: inherit;
+  color: #1e1812;
+  background-color: rgba(139, 108, 66, 0.15);
+  border: 2px solid #8c7355;
+  outline: none;
+}
+
+.box ul {
+  list-style: none;
+  padding-left: 4px;
+}
+
+.box li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.box li::before {
+  content: "\003E";
+  font-family: 'Minecraft', monospace;
+}
+
+.task-text {
+  position: relative;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+.box li.completed .task-text {
+  opacity: 0.55;
+}
+
+.box li.completed .task-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46%;
+  height: 2px;
+  background-color: #1e1812;
+  pointer-events: none;
+}
+
+.delete-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  color: #8c7355;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.delete-btn:hover {
+  color: #a82828;
+  transform: scale(1.2);
+}
