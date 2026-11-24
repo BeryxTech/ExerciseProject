@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import { playBell } from './sounds';
 
 function isTaskDueOrOverdue(task, now) {
   if (task.completed || task.notified || !task.dueDate) return false;
@@ -42,6 +43,8 @@ export default function QuestAlerts({ alertsEnabled, onSyncTasks, onFocusBook })
         return;
       }
 
+      playBell();
+
       const notif = new Notification(`Quest Due: ${task.text}`, {
         body: task.dueTime
           ? `Scheduled for ${task.dueDate} at ${task.dueTime}`
@@ -68,7 +71,6 @@ export default function QuestAlerts({ alertsEnabled, onSyncTasks, onFocusBook })
         const latestTasks = await res.json();
         onSyncTasks(latestTasks);
 
-        // Skip firing popups while muted from the Hotbar
         if (!alertsEnabled) return;
 
         const now = new Date();

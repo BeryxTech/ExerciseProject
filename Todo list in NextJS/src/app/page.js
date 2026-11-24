@@ -8,6 +8,13 @@ import TodoBook from './TodoBook';
 import Hotbar from './Hotbar';
 import CalendarWindow from './CalendarWindow';
 import QuestAlerts from './QuestAlerts';
+import {
+  playClick,
+  playBell,
+  playXpOrb,
+  playLevelUp,
+  setFireflyAmbience,
+} from './sounds';
 
 export default function Home() {
   const [tasks, setTasks] = useState([]);
@@ -21,32 +28,48 @@ export default function Home() {
   const [alertsEnabled, setAlertsEnabled] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setNotifPermission(Notification.permission);
-      if (Notification.permission === 'granted') {
-        setAlertsEnabled(true);
+      setFireflyAmbience(true);
+
+      if (typeof window !== 'undefined' && 'Notification' in window) {
+        setNotifPermission(Notification.permission);
+        if (Notification.permission === 'granted') {
+          setAlertsEnabled(true);
+        }
       }
-    }
-  }, []);
+
+      return () => {
+        setFireflyAmbience(false);
+      };
+    }, []);
 
   const handleToggleAlerts = async () => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
+      playClick();
       alert('This browser does not support desktop notifications.');
       return;
     }
 
-    // If browser already granted permission, toggle app-level mute ON/OFF
     if (Notification.permission === 'granted') {
       setNotifPermission('granted');
-      setAlertsEnabled((prev) => !prev);
+      setAlertsEnabled((prev) => {
+        const next = !prev;
+        if (next) {
+          playBell();
+        } else {
+          playClick();
+        }
+        return next;
+      });
       return;
     }
 
+    playClick();
     const permission = await Notification.requestPermission();
     setNotifPermission(permission);
 
     if (permission === 'granted') {
       setAlertsEnabled(true);
+      playBell();
       new Notification('Quest Alerts Enabled!', {
         body: 'You will receive Windows reminders when quests reach their deadline.',
         tag: 'mc-todo-welcome',
@@ -71,7 +94,6 @@ export default function Home() {
     '0'
   )}-${String(now.getDate()).padStart(2, '0')}`;
 
-  // Book & Quill only shows tasks due today (plus any unfinished overdue tasks)
   const todaysTasks = tasks.filter(
     (t) =>
       !t.dueDate ||
@@ -95,6 +117,7 @@ export default function Home() {
       if (!res.ok) throw new Error('Failed to add task');
       const createdTask = await res.json();
       setTasks((prev) => [...prev, createdTask]);
+      playClick();
     } catch (err) {
       console.error(err);
     } finally {
@@ -106,17 +129,31 @@ export default function Home() {
     const target = tasks.find((t) => t.id === id);
     if (!target) return;
 
+    const nextCompleted = !target.completed;
+
     try {
       const res = await fetch('/api/tasks', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, completed: !target.completed }),
+        body: JSON.stringify({ id, completed: nextCompleted }),
       });
       if (!res.ok) throw new Error('Failed to update task');
       const updatedTask = await res.json();
+
       setTasks((prev) =>
         prev.map((task) => (task.id === id ? updatedTask : task))
       );
+
+      if (nextCompleted) {
+        const nextCompletedCount = completedCount + 1;
+        if (nextCompletedCount % 5 === 0) {
+          playLevelUp();
+        } else {
+          playXpOrb();
+        }
+      } else {
+        playClick();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -129,6 +166,7 @@ export default function Home() {
       });
       if (!res.ok) throw new Error('Failed to delete task');
       setTasks((prev) => prev.filter((task) => task.id !== id));
+      playClick();
     } catch (err) {
       console.error(err);
     }
@@ -143,6 +181,7 @@ export default function Home() {
       });
       if (!res.ok) throw new Error('Failed to clear completed tasks');
       setTasks((prev) => prev.filter((task) => !task.completed));
+      playClick();
     } catch (err) {
       console.error(err);
     }
@@ -175,7 +214,10 @@ export default function Home() {
 
       <CalendarWindow
         isOpen={isCalendarOpen}
-        onClose={() => setIsCalendarOpen(false)}
+        onClose={() => {
+          playClick();
+          setIsCalendarOpen(false);
+        }}
         tasks={tasks}
         onAddTask={addTask}
         onToggleTask={toggleTask}
@@ -185,13 +227,18 @@ export default function Home() {
       <Hotbar
         isBookOpen={isBookOpen}
         onToggleBook={() => {
+          playClick();
           setIsBookOpen((prev) => !prev);
           setIsCalendarOpen(false);
         }}
         showClock={showClock}
-        onToggleClock={() => setShowClock((prev) => !prev)}
+        onToggleClock={() => {
+          playClick();
+          setShowClock((prev) => !prev);
+        }}
         isCalendarOpen={isCalendarOpen}
         onToggleCalendar={() => {
+          playClick();
           setIsCalendarOpen((prev) => !prev);
           setIsBookOpen(false);
         }}

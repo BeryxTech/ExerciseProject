@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import './TodoBook.css';
+import { playClick, playPageTurn } from './sounds';
 
 const TASKS_PER_PAGE = 6;
 
@@ -81,6 +82,7 @@ export default function TodoBook({ tasks, onAddTask, onToggleTask, onDeleteTask 
   };
 
   const changeFilter = (nextFilter) => {
+    playClick();
     setFilter(nextFilter);
     setCurrentPage(1);
   };
@@ -124,7 +126,10 @@ export default function TodoBook({ tasks, onAddTask, onToggleTask, onDeleteTask 
               <button
                 type="button"
                 className={`clock-toggle-btn ${showTimePicker || hour ? 'active' : ''}`}
-                onClick={() => setShowTimePicker((prev) => !prev)}
+                onClick={() => {
+                  playClick();
+                  setShowTimePicker((prev) => !prev);
+                }}
                 title="Set due time"
                 aria-label="Set due time"
               >
@@ -221,13 +226,19 @@ export default function TodoBook({ tasks, onAddTask, onToggleTask, onDeleteTask 
           className="page-btn prev"
           aria-label="Previous page"
           disabled={safeCurrentPage === 1}
-          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+          onClick={() => {
+            playPageTurn();
+            setCurrentPage((p) => Math.max(1, p - 1));
+          }}
         />
         <button
           className="page-btn next"
           aria-label="Next page"
           disabled={safeCurrentPage === totalPages}
-          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+          onClick={() => {
+            playPageTurn();
+            setCurrentPage((p) => Math.min(totalPages, p + 1));
+          }}
         />
       </div>
     </div>

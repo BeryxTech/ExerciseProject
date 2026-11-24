@@ -106,6 +106,7 @@ export default function Hotbar({
         {[5, 6, 7, 8].map((slot) => (
           <div key={slot} className="hotbar-slot empty" />
         ))}
+        {/*Coming soon type shit*/}
 
         {/* Slot 9: Clear Completed Tasks */}
         <button
