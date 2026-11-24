@@ -91,15 +91,17 @@
 .box h1 {
   margin: 0 0 6px 0;
   line-height: 1.1;
+  font-size: 17px; 
 }
 
 .box input {
   display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px;
-  margin: 0 0 14px 0;
+  padding: 6px 8px;
+  margin: 0 0 12px 0;
   font-family: inherit;
+  font-size: 12px;
   color: #1e1812;
   background-color: rgba(139, 108, 66, 0.15);
   border: 2px solid #8c7355;
@@ -114,8 +116,9 @@
 .box li {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   margin-bottom: 8px;
+  font-size: 12px; 
 }
 
 .box li::before {
@@ -159,7 +162,29 @@
   line-height: 1;
 }
 
-.delete-btn:hover {
-  color: #a82828;
-  transform: scale(1.2);
+.task-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.task-time {
+  font-size: 10px;
+  color: #5c4223;
+}
+
+.delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  color: #8c7355;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
 }

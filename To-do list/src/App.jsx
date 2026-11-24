@@ -5,23 +5,42 @@ import FireflyCursor from './fireflycursor';
 import ClockHud from './ClockHud';
 import TodoBook from './TodoBook';
 import Hotbar from './Hotbar';
+import CalendarWindow from './CalendarWindow';
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
   const [isBookOpen, setIsBookOpen] = useState(true);
   const [showClock, setShowClock] = useState(true);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  const now = new Date();
+  const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+    2,
+    '0'
+  )}-${String(now.getDate()).padStart(2, '0')}`;
+
+  // Book & Quill only shows tasks due today (plus any unfinished overdue tasks)
+  const todaysTasks = tasks.filter(
+    (t) =>
+      !t.dueDate ||
+      t.dueDate === todayKey ||
+      (t.dueDate < todayKey && !t.completed)
+  );
 
   const completedCount = tasks.filter((t) => t.completed).length;
-  const remainingCount = tasks.length - completedCount;
+  const remainingTodayCount = todaysTasks.filter((t) => !t.completed).length;
 
-  const addTask = (text) => {
-    const newTask = {
-      id: Date.now(),
-      text,
-      completed: false,
+  // Defaults to today when added from the Book; uses selectedDate when added from CalendarWindow
+  const addTask = (text, dueDate = todayKey, dueTime = '') => {
+      const newTask = {
+        id: Date.now(),
+        text,
+        dueDate,
+        dueTime,
+        completed: false,
+      };
+      setTasks((prev) => [...prev, newTask]);
     };
-    setTasks((prev) => [...prev, newTask]);
-  };
 
   const toggleTask = (id) => {
     setTasks((prev) =>
@@ -47,23 +66,40 @@ export default function App() {
         <source src={bgVideo} type="video/mp4" />
       </video>
 
-      {showClock && <ClockHud remainingCount={remainingCount} />}
+      {showClock && <ClockHud remainingCount={remainingTodayCount} />}
 
       {isBookOpen && (
         <TodoBook
-          tasks={tasks}
+          tasks={todaysTasks}
           onAddTask={addTask}
           onToggleTask={toggleTask}
           onDeleteTask={deleteTask}
         />
       )}
 
+      <CalendarWindow
+        isOpen={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
+        tasks={tasks}
+        onAddTask={addTask}
+        onToggleTask={toggleTask}
+        onDeleteTask={deleteTask}
+      />
+
       <Hotbar
         isBookOpen={isBookOpen}
-        onToggleBook={() => setIsBookOpen((prev) => !prev)}
+        onToggleBook={() => {
+          setIsBookOpen((prev) => !prev);
+          setIsCalendarOpen(false);
+        }}
         showClock={showClock}
         onToggleClock={() => setShowClock((prev) => !prev)}
-        remainingCount={remainingCount}
+        isCalendarOpen={isCalendarOpen}
+        onToggleCalendar={() => {
+          setIsCalendarOpen((prev) => !prev);
+          setIsBookOpen(false);
+        }}
+        remainingCount={remainingTodayCount}
         completedCount={completedCount}
         totalCount={tasks.length}
         onClearCompleted={clearCompleted}

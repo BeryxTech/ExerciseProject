@@ -9,6 +9,8 @@ export default function Hotbar({
   completedCount,
   totalCount,
   onClearCompleted,
+  isCalendarOpen,
+  onToggleCalendar,
 }) {
   const xpPercent =
     totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
@@ -58,8 +60,25 @@ export default function Hotbar({
           />
         </button>
 
-        {/* Slots 3-8: Empty Hotbar Slots */}
-        {[3, 4, 5, 6, 7, 8].map((slot) => (
+        {/* Slot 3: Toggle Calendar Window */}
+        <button
+          className={`hotbar-slot ${isCalendarOpen ? 'selected' : ''}`}
+          onClick={onToggleCalendar}
+          aria-label="Toggle Calendar"
+        >
+          <span className="mc-tooltip">
+            {isCalendarOpen ? 'Hide Calendar' : 'Open Calendar'}
+          </span>
+          <img
+            src="/src/assets/Calendar.png"
+            alt="Calendar"
+            className="hotbar-sprite"
+            style={{ width: '100px', height: '70px', objectFit: 'contain' }}
+          />
+        </button>
+
+        {/* Slots 4-8: Empty Hotbar Slots */}
+        {[4, 5, 6, 7, 8].map((slot) => (
           <div key={slot} className="hotbar-slot empty" />
         ))}
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './TodoBook.css';
 
-const TASKS_PER_PAGE = 4;
+const TASKS_PER_PAGE = 6;
 
 export default function TodoBook({ tasks, onAddTask, onToggleTask, onDeleteTask }) {
   const [inputValue, setInputValue] = useState('');
@@ -65,7 +65,7 @@ export default function TodoBook({ tasks, onAddTask, onToggleTask, onDeleteTask 
           Page {safeCurrentPage} of {totalPages}
         </div>
 
-        <h1>To-Do List</h1>
+        <h1>To-Do List Today</h1>
         <input
           type="text"
           placeholder="Add a new task..."
@@ -79,14 +79,25 @@ export default function TodoBook({ tasks, onAddTask, onToggleTask, onDeleteTask 
             <li key={task.id} className={task.completed ? 'completed' : ''}>
               <span className="task-text" onClick={() => onToggleTask(task.id)}>
                 {task.text}
+                {task.dueDate && task.dueDate < new Date().toLocaleDateString('en-CA') && !task.completed && (
+                  <small style={{ color: '#a82828', marginLeft: '6px' }}>
+                    ({task.dueDate.slice(5)})
+                  </small>
+                )}
               </span>
-              <button
-                className="delete-btn"
-                aria-label="Delete task"
-                onClick={() => onDeleteTask(task.id)}
-              >
-                ×
-              </button>
+
+              <div className="task-right">
+                {task.dueTime && (
+                  <span className="task-time">[{task.dueTime}]</span>
+                )}
+                <button
+                  className="delete-btn"
+                  aria-label="Delete task"
+                  onClick={() => onDeleteTask(task.id)}
+                >
+                  ×
+                </button>
+              </div>
             </li>
           ))}
         </ul>
