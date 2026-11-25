@@ -9,10 +9,13 @@ let cachedTracks = [
 let shuffleQueue = [];
 let lastPlayedTrack = null;
 
+const audioCache = {};
+
 function playAudio(src, volume = 0.5) {
   if (typeof window === 'undefined') return;
-  const audio = new Audio(src);
+  const audio = audioCache[src] || (audioCache[src] = new Audio(src));
   audio.volume = volume;
+  audio.currentTime = 0;
   audio.play().catch(() => {});
 }
 

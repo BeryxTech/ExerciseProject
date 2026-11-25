@@ -79,7 +79,10 @@ export default function Home() {
   };
 
   const handleSyncTasks = useCallback((latestTasks) => {
-    setTasks(latestTasks);
+    setTasks((prev) => [
+      ...latestTasks,
+      ...prev.filter((t) => String(t.id).startsWith('temp-')),
+    ]);
     setIsLoading(false);
   }, []);
 
@@ -105,8 +108,12 @@ export default function Home() {
   const remainingTodayCount = todaysTasks.filter((t) => !t.completed).length;
 
   const addTask = async (text, dueDate = todayKey, dueTime = '') => {
-    if (isSubmittingRef.current) return;
-    isSubmittingRef.current = true;
+    const tempId = `temp-${Date.now()}`;
+    setTasks((prev) => [
+      ...prev,
+      { id: tempId, text, dueDate, dueTime, completed: false, notified: false },
+    ]);
+    playClick();
 
     try {
       const res = await fetch('/api/tasks', {
@@ -115,21 +122,28 @@ export default function Home() {
         body: JSON.stringify({ text, dueDate, dueTime }),
       });
       if (!res.ok) throw new Error('Failed to add task');
-      const createdTask = await res.json();
-      setTasks((prev) => [...prev, createdTask]);
-      playClick();
+      const created = await res.json();
+      setTasks((prev) => prev.map((t) => (t.id === tempId ? created : t)));
     } catch (err) {
       console.error(err);
-    } finally {
-      isSubmittingRef.current = false;
+      setTasks((prev) => prev.filter((t) => t.id !== tempId));
     }
   };
 
   const toggleTask = async (id) => {
     const target = tasks.find((t) => t.id === id);
-    if (!target) return;
-
+    if (!target || String(id).startsWith('temp-')) return;
     const nextCompleted = !target.completed;
+
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, completed: nextCompleted } : t))
+    );
+
+    if (nextCompleted) {
+      (completedCount + 1) % 5 === 0 ? playLevelUp() : playXpOrb();
+    } else {
+      playClick();
+    }
 
     try {
       const res = await fetch('/api/tasks', {
@@ -138,41 +152,34 @@ export default function Home() {
         body: JSON.stringify({ id, completed: nextCompleted }),
       });
       if (!res.ok) throw new Error('Failed to update task');
-      const updatedTask = await res.json();
-
-      setTasks((prev) =>
-        prev.map((task) => (task.id === id ? updatedTask : task))
-      );
-
-      if (nextCompleted) {
-        const nextCompletedCount = completedCount + 1;
-        if (nextCompletedCount % 5 === 0) {
-          playLevelUp();
-        } else {
-          playXpOrb();
-        }
-      } else {
-        playClick();
-      }
     } catch (err) {
       console.error(err);
+      setTasks((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, completed: !nextCompleted } : t))
+      );
     }
   };
 
   const deleteTask = async (id) => {
+    if (String(id).startsWith('temp-')) return;
+    const snapshot = tasks;
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+    playClick();
+
     try {
-      const res = await fetch(`/api/tasks?id=${id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(`/api/tasks?id=${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete task');
-      setTasks((prev) => prev.filter((task) => task.id !== id));
-      playClick();
     } catch (err) {
       console.error(err);
+      setTasks(snapshot);
     }
   };
 
   const clearCompleted = async () => {
+    const snapshot = tasks;
+    setTasks((prev) => prev.filter((t) => !t.completed));
+    playClick();
+
     try {
       const res = await fetch('/api/tasks', {
         method: 'DELETE',
@@ -180,13 +187,11 @@ export default function Home() {
         body: JSON.stringify({ clearCompleted: true }),
       });
       if (!res.ok) throw new Error('Failed to clear completed tasks');
-      setTasks((prev) => prev.filter((task) => !task.completed));
-      playClick();
     } catch (err) {
       console.error(err);
+      setTasks(snapshot);
     }
   };
-
   return (
     <>
       <FireflyCursor />
